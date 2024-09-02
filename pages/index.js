@@ -14,6 +14,7 @@ import { ethers } from "ethers";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "react-modal";
+import styles from "./App.module.css";
 
 
 //======================== THIRD CONNECT ======================== //
@@ -27,7 +28,7 @@ import { useMetamask, useWalletConnect, useAddress, useNetwork, useSigner } from
 //=============================================================== //
 
 
-const TADContractAddress = "0xc251790275819b5e0D454611F410A90Dd58bD9eD";
+const TADContractAddress = "0x895BCcff8Ab6eb9Cc582d622E314628fFC89EdF9";
 const USDCContractAddress = "0xC6EC4C136E1B703B512aB9e618c16bcE0ADE6e1F";
 
 const TADAbi = [
@@ -57,7 +58,7 @@ export default function Home() {
   const [assetAddress, setAssetAddress] = useState("");
   const [vaultName, setVaultName] = useState("");
 
-
+  const [isLoading, setIsLoading] = useState(false);
   const [TADContract, setTADContract] = useState(null);
   const [USDCContract, setUSDCContract] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -138,11 +139,17 @@ const connectWallet = async ({ walletoption }) => {
 
   const distributerewards = async () => {
     if (USDCContract && TADContract) {
+      setIsLoading(true);
       try {
-        await TADContract.distributeRewards();
+        const tx = await TADContract.distributeRewards();
+
+        await tx.wait();
         toast.success("Rewards distributed successfully.");
       } catch (error) {
         toast.error("Failed to distribute rewards." + error);
+      }
+      finally{
+        setIsLoading(false);
       }
       
     }
@@ -172,30 +179,34 @@ const connectWallet = async ({ walletoption }) => {
               marginTop: "8vh",
             }}
           >
-            <div className="App">
+            <div className={styles.container}>
+              <div className={styles.appContent}>
               <h1></h1>
               {!address ? (
                  <div>
-                 <button onClick={() => connectWallet({ walletoption: "Metamask" })}>
+                <p style={{color: 'red'}}>Make sure Polygon is selected as your network.</p>
+                 <button className = {styles.button} onClick={() => connectWallet({ walletoption: "Metamask" })}>
                    Connect With Metamask
                  </button>
-                 <button  onClick={() => connectWallet({ walletoption: "Walletconnect" })}>
+                 <button  className = {styles.button} onClick={() => connectWallet({ walletoption: "Walletconnect" })}>
                    Connect With WalletConnect
                  </button>
                </div>
               ) : (
                 <div>
-                  <p>Connected Address: {address}</p>
-                  <p>USDC Assets: {totalAssets}</p>
-                  <p>All Holdings (6 Demicals): {tadBalance}</p>
-                  <p>Asset Address: {assetAddress}</p>
-                  <p>Vault Name: {vaultName}</p>
-                  <p>TAD Address: {TADContractAddress}</p>
+                  <p className= {styles.paragraph}>Connected Address: {address}</p>
+                  <p className= {styles.paragraph}>USDC Assets: {totalAssets}</p>
+                  <p className= {styles.paragraph}>All Holdings (6 Demicals): {tadBalance}</p>
+                  <p className= {styles.paragraph}>Asset Address: {assetAddress}</p>
+                  <p className= {styles.paragraph}>Vault Name: {vaultName}</p>
+                  <p className= {styles.paragraph}>TAD Address: {TADContractAddress}</p>
                   {/* <p>Vault Owner: {vaultOwner}</p> */}
-                  <button onClick={distributerewards}>Distribute Rewards</button>
+                  <button className = {styles.button} onClick={distributerewards}>Distribute Rewards</button>
                 </div>
               )}
+              {isLoading && <p className={styles.loading}>TRANSACTION IN PROCESS...</p>}
             </div>
+          </div>
           </div>
 
          
