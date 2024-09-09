@@ -12,16 +12,19 @@ const Banner = () => {
           src={"/img/banner/banner_shape01.png"}
           alt=""
           className="img-one"
+          style = {{width: '10%', opacity: '0.5'}}
         />
         <img
           src={"/img/banner/banner_shape02.png"}
           alt=""
           className="img-two"
+          style = {{width: '10%', opacity: '0.5'}}
         />
         <img
           src={"/img/banner/banner_shape03.png"}
           alt=""
           className="img-three"
+          style = {{width: '10%', opacity: '0.5'}}
         />
       </div>
 
@@ -29,10 +32,16 @@ const Banner = () => {
         <div className="row justify-content-center">
           <div className="col-lg-10">
             <div className="banner-content text-center">
-              <img src={"/img/icon/fire.png"} alt="" />
+            <img
+          src={"/img/banner/banner_shape04.png"}
+          alt=""
+          className="img-two"
+          style = {{width: '10%', opacity: '0.5'}}
+        />
               <h2 className="title">
-              TheArchitectsDream Vault <br/><span>USDC</span> stats
+               TheArchitectsDream <span>Vault</span>
               </h2>
+             
             </div>
            
           </div>

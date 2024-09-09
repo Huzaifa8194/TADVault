@@ -142,18 +142,22 @@ const connectWallet = async ({ walletoption }) => {
       setIsLoading(true);
       try {
         const tx = await TADContract.distributeRewards();
-
         await tx.wait();
         toast.success("Rewards distributed successfully.");
       } catch (error) {
-        toast.error("Failed to distribute rewards." + error);
-      }
-      finally{
+        const errorMessage = error.message.split('[')[0].trim();
+        
+        if (errorMessage === "cannot estimate gas; transaction may fail or may require manual gas limit") {
+          toast.error("Connected wallet is not owner.");
+        } else {
+          toast.error("Failed to distribute rewards. " + errorMessage);
+        }
+      } finally {
         setIsLoading(false);
       }
-      
     }
   };
+  
   
   
   
@@ -169,44 +173,130 @@ const connectWallet = async ({ walletoption }) => {
         <main className="fix">
           <Banner />
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              marginBottom: "20vh",
-              marginTop: "8vh",
-            }}
-          >
-            <div className={styles.container}>
-              <div className={styles.appContent}>
-              <h1></h1>
+          <div className={styles.container} id="minting">
+            {!address ? (
+              <></>
+            ) : (
+              <div className={styles.sidebar}>
+                <div className={styles.sidebarItem}>
+                  <p>USDC Balance</p>
+                  <h4>{totalAssets} USDC</h4>
+                 
+                </div>
+                <div className={styles.sidebarItem}>
+                  <p>All Holding (6 decimal):</p>
+                  <h4 >{tadBalance} </h4>
+                </div>
+              </div>
+            )}
+
+            <div className={styles.appContent}>
               {!address ? (
-                 <div>
-                <p style={{color: 'red'}}>Make sure Polygon is selected as your network.</p>
-                 <button className = {styles.button} onClick={() => connectWallet({ walletoption: "Metamask" })}>
-                   Connect With Metamask
-                 </button>
-                 <button  className = {styles.button} onClick={() => connectWallet({ walletoption: "Walletconnect" })}>
-                   Connect With WalletConnect
-                 </button>
-               </div>
+                <div className = {styles.buttonholder}>
+                  <img
+                    src="\img\icon\polygon.png"
+                    alt="Polygon Logo"
+                    style={{ width: "60px", height: "auto", margin: "0px" }}
+                  />
+                  <p
+                    style={{
+                      color: "red",
+                      textDecoration: "underline",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Make sure Polygon is selected as your network.
+                  </p>
+                  <button
+                    className="btn"
+                    style={{
+                      marginBottom: "5px",
+                      position: "relative",
+                      width: "80%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      textAlign: "center",
+                    }}
+                    onClick={() => connectWallet({ walletoption: "Metamask" })}
+                  >
+                    <span
+                      style={{
+                        flexGrow: 1,
+                       
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      Connect With MetaMask
+                    </span>
+                    <img
+                      src="/img/icon/metamask.png"
+                      alt="MetaMask Logo"
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        marginLeft: "0px",
+                      }}
+                    />
+                  </button>
+
+                  <button
+                    className="btn"
+                    style={{
+                      position: "relative",
+                      width: "90%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      textAlign: "center",
+                    }}
+                    onClick={() =>
+                      connectWallet({ walletoption: "Walletconnect" })
+                    }
+                  >
+                    <span
+                      style={{
+                        flexGrow: 1,
+                        textAlign: "center",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      Connect With WalletConnect
+                    </span>
+                    <img
+                      src="/img/icon/walletconnect.png"
+                      alt="WalletConnect Logo"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        marginLeft: "0px",
+                      }}
+                    />
+                  </button>
+                </div>
               ) : (
                 <div>
-                  <p className= {styles.paragraph}>Connected Address: {address}</p>
-                  <p className= {styles.paragraph}>USDC Assets: {totalAssets}</p>
-                  <p className= {styles.paragraph}>All Holdings (6 Demicals): {tadBalance}</p>
+                  <p className={styles.paragraph}>
+                    Connected Address: {address}
+                  </p>
+                  {/* <p className={styles.paragraph}>USDC Balance: {usdcBalance}</p>
+            <p className={styles.paragraph}>TAD Balance: {tadBalance}</p> */}
+
                   <p className= {styles.paragraph}>Asset Address: {assetAddress}</p>
-                  <p className= {styles.paragraph}>Vault Name: {vaultName}</p>
+                  <p className= {styles.paragraph}>Vault Name:<br/> {vaultName}</p>
                   <p className= {styles.paragraph}>TAD Address: {TADContractAddress}</p>
                   {/* <p>Vault Owner: {vaultOwner}</p> */}
-                  <button className = {styles.button} onClick={distributerewards}>Distribute Rewards</button>
+                  <button className = "btn" onClick={distributerewards}>Distribute Rewards</button>
                 </div>
               )}
-              {isLoading && <p className={styles.loading}>TRANSACTION IN PROCESS...</p>}
+              {isLoading && (
+                <p className={styles.loading}>TRANSACTION IN PROCESS...</p>
+              )}
             </div>
-          </div>
           </div>
 
          
