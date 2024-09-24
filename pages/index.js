@@ -28,8 +28,8 @@ import { useMetamask, useWalletConnect, useAddress, useNetwork, useSigner } from
 //=============================================================== //
 
 
-const TADContractAddress = "0x895BCcff8Ab6eb9Cc582d622E314628fFC89EdF9";
-const USDCContractAddress = "0xC6EC4C136E1B703B512aB9e618c16bcE0ADE6e1F";
+const TADContractAddress = "0xe5f744F7CD4f21BE0Ce625CCE55479361C5a2380";
+const USDCContractAddress = "0x03Ab8bEA53Cc1244CC33d7de0235F31F40dbb331";
 
 const TADAbi = [
   "function mint(uint256 usdcAmount) external",
